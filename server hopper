@@ -1,13 +1,42 @@
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
-local placeId = game.PlaceId
-local serversUrl = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
-local serverData = HttpService:JSONDecode(game:HttpGet(serversUrl))
-table.sort(serverData.data, function(a, b) return a.playing > b.playing end)
-for _, server in pairs(serverData.data) do
-    if server.playing ~= server.maxPlayers then
-        TeleportService:TeleportToPlaceInstance(placeId, server.id)
-        task.wait(5)
-        break
+
+local function getServers(placeId)
+    local serversUrl = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+    local serverData, errorMessage = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet(serversUrl))
+    end)
+
+    if not serverData then
+        warn("Failed to get server data: " .. errorMessage)
+        return nil
     end
+
+    return serverData.data
+end
+
+local function teleportToServer(placeId, servers)
+    table.sort(servers, function(a, b) return a.playing > b.playing end)
+
+    for _, server in pairs(servers) do
+        if server.playing ~= server.maxPlayers then
+            local success, errorMessage = pcall(function()
+                TeleportService:TeleportToPlaceInstance(placeId, server.id)
+            end)
+
+            if not success then
+                warn("Failed to teleport: " .. errorMessage)
+            end
+
+            task.wait(5)
+            break
+        end
+    end
+end
+
+local placeId = game.PlaceId
+local servers = getServers(placeId)
+
+if servers then
+    teleportToServer(placeId, servers)
 end
