@@ -1,0 +1,13 @@
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local placeId = game.PlaceId
+local serversUrl = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+local serverData = HttpService:JSONDecode(game:HttpGet(serversUrl))
+table.sort(serverData.data, function(a, b) return a.playing > b.playing end)
+for _, server in pairs(serverData.data) do
+    if server.playing ~= server.maxPlayers then
+        TeleportService:TeleportToPlaceInstance(placeId, server.id)
+        task.wait(5)
+        break
+    end
+end
