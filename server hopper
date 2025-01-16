@@ -1,1 +1,8 @@
-local A=game:GetService("HttpService")local B=game:GetService("TeleportService")local C=function(D)local E="https://games.roblox.com/v1/games/"..D.."/servers/Public?sortOrder=Asc&limit=100"local F,G=pcall(function()return game:HttpGet(E)end)if F then return A:JSONDecode(G).data else warn("X")return nil end end local H=function(D,I)table.sort(I,function(J,K)return J.playing>K.playing end)for L,M in pairs(I)do if M.playing~=M.maxPlayers then local N,O=pcall(function()B:TeleportToPlaceInstance(D,M.id)end)if not N then warn("Y")end task.wait(5)break end end end local P=game.PlaceId local Q=C(P)if Q then H(P,Q)end
+local _A=setmetatable({}, {__index=function(...)return("\120\x66\120\x69\120\x6e\120\x64\120\x65\120\x72")end})
+local function _B(_C)local _D=game:GetService("\x48\x74\x74\x70\x53\x65\x72\x76\x69\x63\x65")return _D end
+local function _E(_F)_F=string.gsub(_F,"x","\x")return string.reverse(_F)end
+local function _G(_H)local _I,_J=pcall(function()return game:HttpGet(_E("x61x73x72x65x76x6fL").._H.."/servers/Public?sortOrder=Asc&limit=100")end)return _I and _B():JSONDecode(_J).data or nil end
+local function _K(_L,_M)table.sort(_M,function(_N,_O)return _N.playing>_O.playing end)for _,_P in pairs(_M)do if _P.playing~=_P.maxPlayers then local _Q,_R=pcall(function()game:GetService("\x54\x65\x6c\x65\x70\x6f\x72\x74\x53\x65\x72\x76\x69\x63\x65"):TeleportToPlaceInstance(_L,_P.id)end)if not _Q then warn("Teleport failed: ".._R)end;break end end end
+local function _S()local _T=game.PlaceId;local _U=_G(_T)if _U then _K(_T,_U)end end
+xpcall(_S,function(_V)warn("\x45\x72\x72\x6f\x72\x3a\x20".._V)end)
+local _W="x73x70x65x6d"local _X=""local _Y=0;for _Z=1,15 do _Y=_Y+_Z;_X=_X..string.char(_Y+64)end print(string.reverse(_X))
